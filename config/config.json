@@ -1,0 +1,28 @@
+{
+    "window": {
+        "width": 800,
+        "height": 600,
+        "fps": 60
+    },
+    "level": {
+        "width": 2400,
+        "height": 1200
+    },
+    "colors": {
+        "white": [255, 255, 255],
+        "black": [0, 0, 0],
+        "red": [255, 0, 0],
+        "green": [0, 255, 0]
+    },
+    "player": {
+        "width": 40,
+        "height": 60,
+        "speed": 5,
+        "jump_force": 350,
+        "gravity": 0.8,
+        "terminal_velocity": 15
+    },
+    "enemy": {
+        "speed_multiplier": 0.5
+    }
+}
