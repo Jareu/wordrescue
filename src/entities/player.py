@@ -54,9 +54,8 @@ class Player(GameObject):
             # Check if contact normal is pointing upward (bottom collision)
             if math.fabs(normal.y) > 0.707:  # cos(45°) ≈ 0.707, allows for some slope
                 # Get the other body
-                other_body = edge.contact.fixtureB.body if edge.contact.fixtureA.body == self.body else edge.contact.fixtureA.body
+                contact_body = edge.contact.fixtureB.body if edge.contact.fixtureA.body == self.body else edge.contact.fixtureA.body
                 can_jump = True
-                contact_body = other_body
                 break
         
         if can_jump and contact_body:

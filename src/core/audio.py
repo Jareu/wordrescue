@@ -28,6 +28,7 @@ class AudioManager:
             self.sounds['expire'] = pygame.mixer.Sound(os.path.join(sounds_dir, 'expire.mp3'))
             self.sounds['pause'] = pygame.mixer.Sound(os.path.join(sounds_dir, 'pause.mp3'))
             self.sounds['unpause'] = pygame.mixer.Sound(os.path.join(sounds_dir, 'unpause.mp3'))
+            self.sounds['death'] = pygame.mixer.Sound(os.path.join(sounds_dir, 'death.mp3'))
         except pygame.error as e:
             print(f"Warning: Could not load jump sound: {e}")
             self.sounds['jump'] = None
