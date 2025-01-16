@@ -13,6 +13,7 @@ from core.audio import AudioManager
 from core.background import ParallaxBackground, TileMode
 
 audio_manager = AudioManager()
+player, platforms, collectibles, enemies = None, None, None, None
 is_paused = False
 
 # Add death zone constant
@@ -35,6 +36,7 @@ def create_platforms(physics_world):
 
 def reset_game(physics_world):
     """Reset the game to initial state"""
+    global player, platforms, collectibles, enemies
     player = Player(physics_world, 100, 300)
     platforms = create_platforms(physics_world)
     collectibles = [
@@ -51,7 +53,6 @@ def reset_game(physics_world):
         Ghost(physics_world, 1200, config.LEVEL_HEIGHT - 90),
         Slime(physics_world, 1600, config.LEVEL_HEIGHT - 60),
     ]
-    return player, platforms, collectibles, enemies
 
 def handle_pause():
     global is_paused
@@ -73,13 +74,17 @@ def main():
     camera = Camera(config.LEVEL_WIDTH, config.LEVEL_HEIGHT)
     ui = GameUI()
     
-    player, platforms, collectibles, enemies = reset_game(physics_world)
+    reset_game(physics_world)
     is_paused = False
 
     # Initialize background
     background = ParallaxBackground()
-    background.add_layer("../assets/backgrounds/sky.png", 1.0, TileMode.HORIZONTAL)  # Sky tiles horizontally
-    background.add_layer("../assets/backgrounds/mountain.png", 0.9, TileMode.NONE)  # Mountains don't tile
+    background.add_layer("assets/backgrounds/sky.png", 2.0, TileMode.HORIZONTAL)
+    background.add_layer("assets/backgrounds/landscape5.png", 0.99, TileMode.NONE, scale=1.7, y_offset=-350)  
+    background.add_layer("assets/backgrounds/mountains2.png", 0.97, TileMode.NONE, scale=0.8, x_offset=-100, y_offset=250)
+    background.add_layer("assets/backgrounds/landscape2.png", 0.93, TileMode.HORIZONTAL, scale=0.8, x_offset=0, y_offset=50) 
+    background.add_layer("assets/backgrounds/landscape1.png", 0.92, TileMode.HORIZONTAL, scale=0.8, x_offset=0, y_offset=50) 
+    background.add_layer("assets/backgrounds/grass.png", 0.90, TileMode.NONE, scale=0.8, x_offset=0, y_offset=175) 
     #background.add_layer("../assets/backgrounds/trees.png", 0.6, TileMode.HORIZONTAL)  # Trees tile horizontally
     
     while True:
@@ -93,7 +98,7 @@ def main():
                     pygame.quit()
                     sys.exit()
                 elif event.key == pygame.K_r and not is_paused:
-                    player, platforms, collectibles, enemies = reset_game(physics_world, audio_manager)
+                    reset_game(physics_world, audio_manager)
                 elif event.key == pygame.K_p:
                     handle_pause()
                 elif event.key == pygame.K_w and not is_paused:
@@ -121,7 +126,8 @@ def main():
             
             # Check death zone
             if player.rect.top >= DEATH_ZONE:
-                player, platforms, collectibles, enemies = reset_game(physics_world)
+                reset_game(physics_world)
+                audio_manager.play_sound('death')
 
             camera.update(player)
 
@@ -132,7 +138,8 @@ def main():
             for enemy in enemies:
                 enemy.update(player)
                 if enemy.rect.colliderect(player.rect):
-                    player, platforms, collectibles, enemies = reset_game(physics_world)
+                    reset_game(physics_world)
+                    audio_manager.play_sound('death')
 
         # Always update UI and draw
         ui.update_coin_count(player.coins)
@@ -142,7 +149,7 @@ def main():
         
         # Draw background layers first
         background.draw(screen, camera)
-        
+    
         # Draw platforms using their draw method
         for platform in platforms:
             platform.draw(screen, camera)
